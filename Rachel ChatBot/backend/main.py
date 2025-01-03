@@ -16,8 +16,8 @@ from functions.database import store_messages, reset_messages
 
 
 # Get Environment Vars
-openai.organization = config("OPEN_AI_ORG")
-openai.api_key = config("OPEN_AI_KEY")
+# TODO: The 'openai.organization' option isn't read in the client API. You will need to pass it when you instantiate the client, e.g. 'OpenAI(organization=config("OPEN_AI_ORG"))'
+# openai.organization = config("OPEN_AI_ORG")
 
 
 # Initiate App
