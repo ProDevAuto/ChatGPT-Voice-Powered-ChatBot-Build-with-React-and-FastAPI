@@ -12,12 +12,14 @@ openai.api_key = config("OPEN_AI_KEY")
 # Open AI - Whisper
 # Convert audio to text
 def convert_audio_to_text(audio_file):
-  try:
-    transcript = openai.Audio.transcribe("whisper-1", audio_file)
-    message_text = transcript["text"]
-    return message_text
-  except Exception as e:
-    return
+    try:
+        transcript = openai.Audio.transcribe("whisper-1", audio_file)
+        message_text = transcript["text"]
+        return message_text
+    except Exception as e:
+        print(f"Error during audio transcription: {e}")
+        return None
+
 
 # Open AI - Chat GPT
 # Convert audio to text
@@ -36,4 +38,5 @@ def get_chat_response(message_input):
     message_text = response["choices"][0]["message"]["content"]
     return message_text
   except Exception as e:
+    print(e)
     return

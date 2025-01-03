@@ -7,6 +7,8 @@ const Controller = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [messages, setMessages] = useState<any[]>([]);
 
+  const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8000";
+
   function createBlobURL(data: any) {
     const blob = new Blob([data], { type: "audio/mpeg" });
     const url = window.URL.createObjectURL(blob);
@@ -20,38 +22,35 @@ const Controller = () => {
     const myMessage = { sender: "me", blobUrl };
     const messagesArr = [...messages, myMessage];
 
-    // convert blob url to blob object
+    // Convert blob URL to a Blob object
     fetch(blobUrl)
       .then((res) => res.blob())
       .then(async (blob) => {
-        // Construct audio to send file
+        // Construct audio to send as a file
         const formData = new FormData();
         formData.append("file", blob, "myFile.wav");
 
-        // send form data to api endpoint
+        // Send form data to the API endpoint
         await axios
-          .post("http://localhost:8000/post-audio", formData, {
-            headers: {
-              "Content-Type": "audio/mpeg",
-            },
+          .post(`${apiUrl}/post-audio`, formData, {
             responseType: "arraybuffer", // Set the response type to handle binary data
           })
           .then((res: any) => {
-            const blob = res.data;
+            const blob = new Blob([res.data], { type: "audio/mpeg" });
             const audio = new Audio();
             audio.src = createBlobURL(blob);
 
-            // Append to audio
+            // Append Rachel's response
             const rachelMessage = { sender: "rachel", blobUrl: audio.src };
             messagesArr.push(rachelMessage);
             setMessages(messagesArr);
 
-            // Play audio
+            // Play the audio response
             setIsLoading(false);
             audio.play();
           })
           .catch((err: any) => {
-            console.error(err);
+            console.error("Error:", err);
             setIsLoading(false);
           });
       });
@@ -75,7 +74,7 @@ const Controller = () => {
                 }
               >
                 {/* Sender */}
-                <div className="mt-4 ">
+                <div className="mt-4">
                   <p
                     className={
                       audio.sender == "rachel"
@@ -97,11 +96,11 @@ const Controller = () => {
             );
           })}
 
-          {messages.length == 0 && !isLoading && (
+          {messages.length === 0 && !isLoading && (
             <div className="text-center font-light italic mt-10">
               Send Rachel a message...
-            </div>
-          )}
+              </div>
+            )}
 
           {isLoading && (
             <div className="text-center font-light italic mt-10 animate-pulse">
@@ -124,3 +123,4 @@ const Controller = () => {
 };
 
 export default Controller;
+

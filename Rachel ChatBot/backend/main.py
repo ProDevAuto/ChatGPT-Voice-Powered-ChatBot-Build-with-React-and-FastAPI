@@ -25,12 +25,7 @@ app = FastAPI()
 
 
 # CORS - Origins
-origins = [
-    "http://localhost:5173",
-    "http://localhost:5174",
-    "http://localhost:4173",
-    "http://localhost:3000",
-]
+origins = ["*"]
 
 
 # CORS - Middleware
@@ -41,6 +36,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.get("/")
+async def root():
+    return {"message": "Welcome to the FastAPI backend!"}
 
 
 # Check health
